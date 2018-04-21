@@ -1,0 +1,14 @@
+<h1>hero form</h1>
+<form #demoForm='ngForm'>
+  <input type='text' id='name'
+  required
+  pattern="([a-zA-Z0-9]+[_|_|.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|_|.]?)*[a-zA-Z0-9]+.[a-zA-Z]{2,4}"
+  [(ngModel)]="modelMessage" name="name" #name2="ngModel">
+  <div [hidden]="name2.valid || name2.pristine" class="alert alert-danger">
+    Name is required
+  </div>
+  <button type="submit" [disabled]="demoForm.invalid">注册</button>
+<p>{{name2.touched}}</p>
+<p>{{modelMessage}}</p>
+<p>{{demoForm.value | json}}</p>
+</form>
