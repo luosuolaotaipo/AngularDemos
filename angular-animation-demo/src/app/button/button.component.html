@@ -1,0 +1,7 @@
+<button class="btn"
+(click)="onClick()"
+[@btnState]="isActive"
+>
+click it
+</button>
+<div class='display-flag' *ngIf="displayFlag" [@fadeInOut]="'in'"> flag </div>

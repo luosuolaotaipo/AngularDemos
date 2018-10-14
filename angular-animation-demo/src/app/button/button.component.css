@@ -4,3 +4,8 @@
     border-radius: 5px;
     text-align: center
 }
+.display-flag{
+    width:80px;
+    height: 40px;
+    background-color: dodgerblue;
+}
