@@ -1,0 +1,32 @@
+.stickyTop{
+    position: fixed;
+    top:50px;
+    background-color: wheat;
+}
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    /* grid-auto-rows: minmax(100px, auto); */
+}
+.left-wrapper{
+    grid-column: 1;
+}
+.content{
+    grid-column: 2/4;
+}
+.flight-info{
+    height: 80px;
+}
+
+div{
+    margin:10px;
+    border: 3px solid chocolate;
+    background-color: wheat;
+}
+div[appMyNguiSticky]{
+
+}
+li{
+    height: 50px;
+}
