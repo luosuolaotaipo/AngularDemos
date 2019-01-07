@@ -30,3 +30,11 @@ div[appMyNguiSticky]{
 li{
     height: 50px;
 }
+.nav-sticky{
+    position: fixed;
+    top:0px;
+    transition:all 0.3;
+}
+.nav-not-sticky{
+    position: relative;
+}

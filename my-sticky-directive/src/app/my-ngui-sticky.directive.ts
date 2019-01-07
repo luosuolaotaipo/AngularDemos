@@ -1,17 +1,20 @@
 import { AfterViewInit, Directive, ElementRef, Input, OnDestroy, Renderer2 } from '@angular/core';
 
+
 @Directive({
   selector: '[appMyNguiSticky]'
 })
 export class MyNguiStickyDirective implements AfterViewInit, OnDestroy {
-  @Input('sticky-after') public stickyAfter: string;  // css selector to be sticky after
-
+  @Input() public stickyAfter: string;  // css selector to be sticky after
   protected el: HTMLElement;
   protected parentEl: HTMLElement;
   protected fillerEl: HTMLElement;
   protected stickyAfterElement: HTMLElement;
+  protected stickyTopDistance: number;
+  private preScrollPos: number;
+  private curScrollPos: number;
 
-  protected diff: any;
+  // protected diff: any;
   protected original: any;
 
   protected STICKY_CLASSES = {
@@ -29,10 +32,11 @@ export class MyNguiStickyDirective implements AfterViewInit, OnDestroy {
   }
 
   public ngAfterViewInit(): void {
-    this.el.style.boxSizing = 'border-box';
+    // this.el.style.boxSizing = 'border-box';
     this.renderer.addClass(this.el, this.STICKY_CLASSES.UNSTUCK);
     this.renderer.addClass(this.el, this.STICKY_CLASSES.TOP);
     this.renderer.addClass(this.parentEl, this.STICKY_CLASSES.CONTAINER);
+    this.preScrollPos = window.pageYOffset;
 
     if (this.stickyAfter) {
       this.stickyAfterElement = document.querySelector(this.stickyAfter) as HTMLElement;
@@ -45,10 +49,10 @@ export class MyNguiStickyDirective implements AfterViewInit, OnDestroy {
       this.parentEl.style.position = 'relative';
     }
 
-    this.diff = {
-      top: this.el.offsetTop - this.parentEl.offsetTop,
-      left: this.el.offsetLeft - this.parentEl.offsetLeft
-    };
+    // this.diff = {
+    //   top: this.el.offsetTop - this.parentEl.offsetTop,
+    //   left: this.el.offsetLeft - this.parentEl.offsetLeft
+    // };
 
     const elRect = this.el.getBoundingClientRect();
     this.original = {
@@ -61,10 +65,10 @@ export class MyNguiStickyDirective implements AfterViewInit, OnDestroy {
       width: this.computedStyle(this.el, 'width'),
       offsetTop: this.el.offsetTop,
       offsetLeft: this.el.offsetLeft,
-      marginTop: parseInt(this.computedStyle(this.el, 'marginTop'),10),
-      marginBottom: parseInt(this.computedStyle(this.el, 'marginBottom'),10),
-      marginLeft: parseInt(this.computedStyle(this.el, 'marginLeft'),10),
-      marginRight: parseInt(this.computedStyle(this.el, 'marginLeft'),10)
+      marginTop: parseInt(this.computedStyle(this.el, 'marginTop'), 10),
+      marginBottom: parseInt(this.computedStyle(this.el, 'marginBottom'), 10),
+      marginLeft: parseInt(this.computedStyle(this.el, 'marginLeft'), 10),
+      marginRight: parseInt(this.computedStyle(this.el, 'marginLeft'), 10)
     };
 
     this.attach();
@@ -85,35 +89,33 @@ export class MyNguiStickyDirective implements AfterViewInit, OnDestroy {
   }
 
   protected scrollHandler = () => {
+    this.curScrollPos = window.pageYOffset;
     const parentRect: ClientRect = this.el.parentElement.getBoundingClientRect();
-    const bodyRect: ClientRect = document.body.getBoundingClientRect();
-    const stickyOffsetTop = this.stickyAfterElement ? this.stickyAfterElement.getBoundingClientRect().bottom : 0;
-    let dynProps;
+    // const bodyRect: ClientRect = document.body.getBoundingClientRect();
+    const elRect: ClientRect = this.el.getBoundingClientRect();
+    const stickyOffsetTop = this.stickyAfterElement ?
+      this.stickyAfterElement.getBoundingClientRect().bottom > 0 ? this.stickyAfterElement.getBoundingClientRect().bottom : 0
+      : 0;
 
-    if (this.original.float === 'right') {
-      const right = bodyRect.right - parentRect.right + this.original.marginRight;
-      dynProps = { right: right + 'px' };
-    } else if (this.original.float === 'left') {
-      const left = parentRect.left - bodyRect.left + this.original.marginLeft;
-      dynProps = { left: left + 'px' };
-    } else {
-      dynProps = { width: parentRect.width + 'px' };
-    }
 
-    if (this.original.marginTop + this.original.marginBottom +
-      this.original.boundingClientRect.height + stickyOffsetTop >= parentRect.bottom) {
+    // if (this.original.marginTop + this.original.marginBottom +
+      // this.original.boundingClientRect.height + stickyOffsetTop >= parentRect.bottom
+      if (
+        window.scrollY+window.innerHeight>this.parentEl.scrollHeight//window.scrollY+
+
+
+      ) {
       /**
        * sticky element reached to the bottom of the container
        */
-      const floatAdjustment =
-        this.original.float === 'right' ? { right: 0 } :
-          this.original.float === 'left' ? { left: 0 } : {};
+      console.log(this.original.bottom);
       Object.assign(this.el.style, {
         position: 'absolute',
         float: 'none',
         top: 'inherit',
         bottom: 0
-      }, dynProps, floatAdjustment);
+      });
+      this.setStickyTopDistance();
       this.renderer.removeClass(this.el, this.STICKY_CLASSES.STUCK);
       this.renderer.removeClass(this.el, this.STICKY_CLASSES.TOP);
       this.renderer.addClass(this.el, this.STICKY_CLASSES.UNSTUCK);
@@ -122,21 +124,38 @@ export class MyNguiStickyDirective implements AfterViewInit, OnDestroy {
       /**
        * sticky element is in the middle of container
        */
+      if (elRect.height > window.innerHeight) {
+        if (elRect.bottom > window.innerHeight) {
+          if (elRect.top < 0) {
+            // scrolls to the middle(can't see its top nor bottom)
+            this.handleStyle(StickyStatusEnum.AbsolutePos);
+          } else {
+            // scrolls to the top
+            if (this.preScrollPos > this.curScrollPos) {
+              this.handleStyle(StickyStatusEnum.StickyUp, stickyOffsetTop);
+            } else {
+              this.handleStyle(StickyStatusEnum.AbsolutePos);
+            }
+          }
+        } else {
+          // scroll to the bottom
+          if (this.preScrollPos > this.curScrollPos) {
+            this.handleStyle(StickyStatusEnum.AbsolutePos);
+          } else {
+            this.handleStyle(StickyStatusEnum.StickyBottom);
+          }
+        }
 
-      // if not floating, add an empty filler element, since the original elements becames 'fixed'
-      if (this.original.float !== 'left' && this.original.float !== 'right' && !this.fillerEl) {
-        this.fillerEl = document.createElement('div');
-        this.fillerEl.style.height = this.el.offsetHeight + 'px';
-        this.renderer.addClass(this.fillerEl, this.STICKY_CLASSES.FILLER);
-        this.parentEl.insertBefore(this.fillerEl, this.el);
+        console.log(this.stickyTopDistance);
+      } else {
+        // short length
+        Object.assign(this.el.style, {
+          position: 'fixed', // fixed is a lot smoother than absolute
+          float: 'none',
+          top: stickyOffsetTop + 'px',
+          bottom: 'inherit'
+        });
       }
-
-      Object.assign(this.el.style, {
-        position: 'fixed', // fixed is a lot smoother than absolute
-        float: 'none',
-        top: stickyOffsetTop + 'px',
-        bottom: 'inherit'
-      }, dynProps);
       this.renderer.removeClass(this.el, this.STICKY_CLASSES.UNSTUCK);
       this.renderer.removeClass(this.el, this.STICKY_CLASSES.TOP);
       this.renderer.removeClass(this.el, this.STICKY_CLASSES.BOTTOM);
@@ -156,7 +175,8 @@ export class MyNguiStickyDirective implements AfterViewInit, OnDestroy {
         bottom: this.original.bottom,
         width: this.original.width,
         left: this.original.left
-      }, dynProps);
+      });
+      this.setStickyTopDistance();
       this.renderer.removeClass(this.el, this.STICKY_CLASSES.STUCK);
       this.renderer.removeClass(this.el, this.STICKY_CLASSES.BOTTOM);
       this.renderer.addClass(this.el, this.STICKY_CLASSES.UNSTUCK);
@@ -169,7 +189,7 @@ export class MyNguiStickyDirective implements AfterViewInit, OnDestroy {
  * @param styleProp
  * @returns {any}
  */
-  public computedStyle(element: HTMLElement, styleProp:string) {
+  public computedStyle(element: HTMLElement, styleProp: string) {
     let el: HTMLElement;
     el = (typeof element === 'string') ? document.querySelector(element) : element;
     let value, defaultView = (el.ownerDocument || document).defaultView;
@@ -200,6 +220,51 @@ export class MyNguiStickyDirective implements AfterViewInit, OnDestroy {
       return value;
     }
   }
+
+  setStickyTopDistance() {
+    this.stickyTopDistance = window.scrollY + window.innerHeight - this.el.clientHeight;
+  }
+
+  handleStyle(stickyStatus:StickyStatusEnum, stickyOffsetTop?: number) {
+    if (stickyStatus === StickyStatusEnum.Default) {
+      Object.assign(this.el.style, {
+        position: this.original.position,
+        float: this.original.float,
+        top: this.original.top,
+        bottom: this.original.bottom,
+        width: this.original.width,
+        left: this.original.left
+      });
+    } else if (stickyStatus === StickyStatusEnum.StickyUp) {
+      Object.assign(this.el.style, {
+        position: 'fixed', //fixed is a lot smoother than absolute
+        float: 'none',
+        top: stickyOffsetTop + 'px',
+        bottom: 'inherit'
+      });
+      this.setStickyTopDistance();
+    } else if (stickyStatus === StickyStatusEnum.AbsolutePos) {
+      Object.assign(this.el.style, {
+        position: 'absolute',
+        top: this.stickyTopDistance + 'px',
+        bottom: 'inherit'
+      });
+    } else if (stickyStatus === StickyStatusEnum.StickyBottom) {
+      this.setStickyTopDistance();
+      Object.assign(this.el.style, {
+        position: 'fixed',
+        bottom: '0px',
+        top: 'auto'
+      });
+    }
+    this.preScrollPos = window.pageYOffset;
+  }
 }
 
+enum StickyStatusEnum {
+  'StickyUp',
+  'StickyBottom',
+  'AbsolutePos',
+  'Default'
+}
 
