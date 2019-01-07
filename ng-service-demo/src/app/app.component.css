@@ -1,0 +1,9 @@
+.app-wrapper{
+    display: flex;
+}
+.app-wrapper div{
+    border: 2px #454545 solid;
+    border-radius: 4px;
+    margin:20px;
+    padding: 20px
+}

@@ -1,0 +1,13 @@
+<button (click)="AToggle()">hide A module</button>
+<button (click)="BToggle()">hide B module</button>
+<div class="app-wrapper">
+    <div *ngIf="!hideModuleA">
+        <app-a></app-a>
+    </div>
+    <div *ngIf="!hideModuleB">
+        <app-b></app-b>
+    </div>
+    <div>
+        <router-outlet></router-outlet>
+    </div>
+</div>

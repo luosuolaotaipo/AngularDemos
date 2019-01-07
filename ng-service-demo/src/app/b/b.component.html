@@ -1,0 +1,11 @@
+<p>
+  b works!
+</p>
+<button (click)="B1Toggle()">b1 toggle</button>
+<button (click)="B2Toggle()">b2 toggle</button>
+<div *ngIf="!hideB1">
+  <app-b1></app-b1>
+</div>
+<div *ngIf="!hideB2">
+  <app-b2></app-b2>
+</div>

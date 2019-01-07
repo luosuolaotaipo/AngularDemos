@@ -1,0 +1,11 @@
+<p>
+  a works!
+</p>
+<button (click)="A1Toggle()">a1 toggle</button>
+<button (click)="A2Toggle()">a2 toggle</button>
+<div *ngIf="!hideA1">
+  <app-a1></app-a1>
+</div>
+<div *ngIf="!hideA2">
+  <app-a2></app-a2>
+</div>
