@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Self } from '@angular/core';
 import { RootService } from 'src/app/root.service';
 import { SubRootService } from 'src/app/sub-root.service';
 import { CompLevelService } from 'src/app/comp-level.service';
@@ -7,7 +7,8 @@ import { CompLevelService } from 'src/app/comp-level.service';
   selector: 'app-b1',
   templateUrl: './b1.component.html',
   styleUrls: ['./b1.component.css'],
-  providers: [CompLevelService]
+  providers: [CompLevelService, SubRootService]
+  // providers: [CompLevelService]
 })
 export class B1Component implements OnInit {
 
@@ -15,7 +16,8 @@ export class B1Component implements OnInit {
   subRootCounter: number;
   constructor(
     private root: RootService,
-    private subRoot: SubRootService,
+    @Self() private subRoot: SubRootService,
+    // private subRoot: SubRootService,
     private comp: CompLevelService
   ) { }
 

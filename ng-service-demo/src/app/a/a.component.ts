@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { RootService } from '../root.service';
+import { SubRootService } from '../sub-root.service';
 
 @Component({
   selector: 'app-a',
@@ -9,7 +11,10 @@ export class AComponent implements OnInit {
 
   private hideA1:boolean;
   private hideA2:boolean;
-  constructor() { }
+  constructor(
+    private root:RootService,
+    private subR:SubRootService
+  ) { }
 
   ngOnInit() {
     this.hideA1 = false;

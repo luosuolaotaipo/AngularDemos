@@ -1,5 +1,6 @@
 <button (click)="AToggle()">hide A module</button>
 <button (click)="BToggle()">hide B module</button>
+<p>{{root.id}}</p>
 <div class="app-wrapper">
     <div *ngIf="!hideModuleA">
         <app-a></app-a>
