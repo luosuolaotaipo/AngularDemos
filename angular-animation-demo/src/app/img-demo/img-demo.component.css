@@ -1,0 +1,6 @@
+.total img{
+    display: none;
+}
+.total .display{
+    display: unset;
+}

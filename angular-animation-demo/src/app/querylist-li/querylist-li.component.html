@@ -1,0 +1,8 @@
+<button (click)="addCounter()">add counter</button>
+<ul>
+  <ng-template ngFor let-item [ngForOf]="arr" let-i="index">
+    <ng-container *ngIf="i < counter">
+      <li>{{item}}</li>
+    </ng-container>
+  </ng-template>
+</ul>

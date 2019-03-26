@@ -3,11 +3,17 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { ButtonComponent } from './button/button.component';
+import { LoadImgDirective } from './load-img.directive';
+import { ImgDemoComponent } from './img-demo/img-demo.component';
+import { QuerylistLiComponent } from './querylist-li/querylist-li.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ButtonComponent
+    ButtonComponent,
+    LoadImgDirective,
+    ImgDemoComponent,
+    QuerylistLiComponent
   ],
   imports: [
     BrowserModule,
