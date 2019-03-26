@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { ButtonComponent } from './button/button.component';
 import { LoadImgDirective } from './load-img.directive';
 import { ImgDemoComponent } from './img-demo/img-demo.component';
-import { QuerylistLiComponent } from './querylist-li/querylist-li.component';
+import { QuerylistLiComponent, ChildDirective } from './querylist-li/querylist-li.component';
 
 @NgModule({
   declarations: [
@@ -13,7 +13,8 @@ import { QuerylistLiComponent } from './querylist-li/querylist-li.component';
     ButtonComponent,
     LoadImgDirective,
     ImgDemoComponent,
-    QuerylistLiComponent
+    QuerylistLiComponent,
+    ChildDirective
   ],
   imports: [
     BrowserModule,

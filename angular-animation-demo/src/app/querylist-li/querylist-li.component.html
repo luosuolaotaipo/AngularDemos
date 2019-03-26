@@ -1,8 +1,18 @@
 <button (click)="addCounter()">add counter</button>
-<ul>
+<ul >
   <ng-template ngFor let-item [ngForOf]="arr" let-i="index">
     <ng-container *ngIf="i < counter">
-      <li>{{item}}</li>
+      <!-- <li appDirective id="{{item}}">{{item}}</li> -->
     </ng-container>
   </ng-template>
 </ul>
+<ul>
+  <!-- <li appDirective>222</li>
+  <li appDirective>222</li>
+  <li appDirective>222</li>
+  <li appDirective>222</li> -->
+  
+</ul>
+<appDirective></appDirective>
+<appDirective></appDirective>
+<appDirective></appDirective>

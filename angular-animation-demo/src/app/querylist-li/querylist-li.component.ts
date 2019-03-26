@@ -1,4 +1,9 @@
-import { Component, OnInit, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
+import { Component, OnInit, ContentChildren, QueryList, AfterContentInit, Directive } from '@angular/core';
+
+
+@Directive({selector: 'appDirective'})
+export class ChildDirective {
+}
 
 @Component({
   selector: 'app-querylist-li',
@@ -7,7 +12,7 @@ import { Component, OnInit, ContentChildren, QueryList, AfterContentInit } from 
 })
 export class QuerylistLiComponent implements OnInit, AfterContentInit {
 
-  @ContentChildren('li') li: QueryList<any>;
+  @ContentChildren(ChildDirective) li: QueryList<ChildDirective>;
   counter = 1;
   arr = [1, 2, 3, 4, 5, 6, 7, 8];
   constructor() { }
@@ -17,13 +22,13 @@ export class QuerylistLiComponent implements OnInit, AfterContentInit {
 
   addCounter() {
     this.counter += 1;
-    this.li.notifyOnChanges();
+    // this.li.notifyOnChanges();
   }
 
   ngAfterContentInit(): void {
     // this.li.forEach(item => { console.log(item) });
     this.li.changes.subscribe(change => {
-      console.log(change);
+      document.getElementById(this.counter.toString()).focus();
     });
   }
 
